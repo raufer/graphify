@@ -4,8 +4,10 @@ name = "pypi"
 verify_ssl = true
 
 [packages]
+
 networkx = "*"
 nose = "*"
+nxpd = "*"
 
 
 [requires]

@@ -1,17 +1,16 @@
 
 
-def initialize_backbone(fw, root_key=None):
+def initialize_backbone(fw):
     """
     Initialize an raw Direct Graph and return it
     'ROOT [0]' is the identifier of the DiGraph root node, composing the only node present at level 0
 
     'fw' is the underlying graph framework used
     """
-    key = root_key or fw.root_key
-
-    node = '{} [{}]'.format(key, fw.next_id())
+    base = fw.root
+    key = fw.root_key
 
     fw.initialize()
-    fw.add_node(node, meta=key.lower(), level=0)
+    fw.add_node(key, meta=base.lower(), level=0, content=[], pad=0)
 
     return fw

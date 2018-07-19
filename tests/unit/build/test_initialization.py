@@ -33,12 +33,6 @@ class TestBuildInitialization(TestCase):
         self.assertEqual(graph['ROOT [0]']['level'], 0)
         self.assertEqual(graph['ROOT [0]']['meta'], 'root')
 
-        graph = initialize_backbone(NetworkxImplementation(), 'Custom')
-
-        self.assertEqual(graph.number_of_nodes(), 1)
-        self.assertListEqual(list(graph.nodes()), ['Custom [0]'])
-        self.assertEqual(graph['Custom [0]']['level'], 0)
-        self.assertEqual(graph['Custom [0]']['meta'], 'custom')
 
 
 

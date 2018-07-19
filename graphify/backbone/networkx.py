@@ -12,8 +12,13 @@ class NetworkxImplementation(GraphBackboneAbstraction):
         self.graph = nx.DiGraph()
         return self.graph
 
+    @property
+    def node(self):
+        return self.graph.node
+
     def add_node(self, node, **data):
         self.graph.add_node(node, **data)
+        self.last_inserted = node
 
     def add_edge(self, a, b):
         self.graph.add_edge(a, b)
@@ -29,6 +34,9 @@ class NetworkxImplementation(GraphBackboneAbstraction):
             return list(self.graph.edges())
         else:
             return list(self.graph.edges(key))
+
+    def parents(self, source):
+        return self.graph.predecessors(source)
 
     def exists_path(self, node_a, node_b):
         return nx.has_path(self.graph, node_a, node_b)

@@ -1,9 +1,10 @@
+import re
 
 from unittest import TestCase
 
 from graphify.backbone.networkx import NetworkxImplementation
 from graphify.build.initialization import initialize_backbone
-from graphify.build.graph import _add_node, _pad
+from graphify.build.graph import _add_node, _pad, handle_match
 from graphify.descriptor.utils import compile_patterns
 
 
@@ -95,6 +96,110 @@ class TestBuildGraph(TestCase):
 
         self.assertEqual(last_node, node)
         self.assertListEqual(nodes_before, nodes_after)
+
+    def test_handle_match_next_in_the_hierarchy(self):
+        """
+        When traversing the input, if a new match is encountered, it should be properly accommodated on the graph.
+        In the most simple case, we detect a node that follows next on the hierarchy
+        """
+        match = re.compile(r'Test Match').search('This is a Test Match sentence')
+
+        descriptor = {
+            'components': ['A', 'B', 'C', 'D'],
+            'patterns': [r'A', r'B', r'C', r'D'],
+            'padding': True
+        }
+
+        descriptor = compile_patterns(descriptor)
+
+        graph = initialize_backbone(NetworkxImplementation())
+
+        inserted = handle_match(graph, match, 1, descriptor)
+
+        self.assertEqual(inserted, "Test Match [1]")
+        self.assertListEqual(sorted(graph.nodes()), sorted(["ROOT [0]", "Test Match [1]"]))
+        self.assertDictEqual(graph["Test Match [1]"], {'pad': 0, 'meta': 'Test Match', 'level': 1, 'content': []})
+
+    def test_handle_match_next_in_the_hierarchy_requiring_padding(self):
+        """
+        When traversing the input, if a new match is encountered, it should be properly accommodated on the graph.
+        If the new level does not immediately follows the next on the hierarchy, and if padding is set to True
+        then we need to pad additional nodes
+        """
+        match = re.compile(r'Test Match').search('This is a Test Match sentence')
+
+        descriptor = {
+            'components': ['A', 'B', 'C', 'D'],
+            'patterns': [r'A', r'B', r'C', r'D'],
+            'padding': True
+        }
+
+        descriptor = compile_patterns(descriptor)
+
+        graph = initialize_backbone(NetworkxImplementation())
+
+        inserted = handle_match(graph, match, 3, descriptor)
+
+        self.assertEqual(inserted, "Test Match [3]")
+        self.assertListEqual(sorted(graph.nodes()), sorted(["ROOT [0]", "Test Match [3]", "A [1]", "B [2]"]))
+        self.assertDictEqual(graph["A [1]"], {'pad': 1, 'meta': 'A', 'level': 1, 'content': []})
+        self.assertDictEqual(graph["B [2]"], {'pad': 1, 'meta': 'B', 'level': 2, 'content': []})
+        self.assertDictEqual(graph["Test Match [3]"], {'pad': 0, 'meta': 'Test Match', 'level': 3, 'content': []})
+
+    def test_handle_match_next_in_the_hierarchy_requiring_padding_set_to_false(self):
+        """
+        When traversing the input, if a new match is encountered, it should be properly accommodated on the graph.
+        If the new level does not immediately follows the next on the hierarchy, and if padding is set to False
+        then we just ignore the gap between the levels
+        """
+        match = re.compile(r'Test Match').search('This is a Test Match sentence')
+
+        descriptor = {
+            'components': ['A', 'B', 'C', 'D'],
+            'patterns': [r'A', r'B', r'C', r'D'],
+            'padding': False
+        }
+
+        descriptor = compile_patterns(descriptor)
+
+        graph = initialize_backbone(NetworkxImplementation())
+
+        inserted = handle_match(graph, match, 3, descriptor)
+
+        self.assertEqual(inserted, "Test Match [1]")
+        self.assertListEqual(sorted(graph.nodes()), sorted(["ROOT [0]", "Test Match [1]"]))
+        self.assertDictEqual(graph["Test Match [1]"], {'pad': 0, 'meta': 'Test Match', 'level': 3, 'content': []})
+
+    def test_handle_match_higher_on_the_hierarchy(self):
+        """
+        When traversing the input, if a new match is encountered, it should be properly accommodated on the graph.
+        If the new level precedes the current one, we should find the appropriate parent to accommodate this new node
+        and properly insert it
+        """
+        match = re.compile(r'Test Match').search('This is a Test Match sentence')
+
+        descriptor = {
+            'components': ['A', 'B', 'C', 'D'],
+            'patterns': [r'A', r'B', r'C', r'D'],
+            'padding': False
+        }
+
+        descriptor = compile_patterns(descriptor)
+
+        graph = initialize_backbone(NetworkxImplementation())
+
+        _ = handle_match(graph, match, 1, descriptor)
+
+        _ = handle_match(graph, match, 2, descriptor)
+
+        inserted = handle_match(graph, match, 1, descriptor)
+
+        self.assertEqual(inserted, "Test Match [3]")
+        self.assertListEqual(sorted(graph.nodes()), sorted(["ROOT [0]", "Test Match [1]", "Test Match [2]", "Test Match [3]"]))
+        self.assertDictEqual(graph["Test Match [3]"], {'pad': 0, 'meta': 'Test Match', 'level': 1, 'content': []})
+
+        self.assertEqual(sorted([r for _, r in graph.edges("ROOT [0]")]), sorted(['Test Match [3]', 'Test Match [1]']))
+
 
 
 

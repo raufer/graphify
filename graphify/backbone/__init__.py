@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 
 class GraphBackboneAbstraction(ABC):
     """
-    Abstract class defining an interface that supports all of the primitive operations needed graphify core
+    Abstract class defining an interface that supports all of the
+    primitive operations needed by graphify core
 
     Ultimately we might want to reuse the library with different backbones for the underlying graph framework
     The goal of this contract is to abstract the graph framework being used
@@ -11,7 +12,9 @@ class GraphBackboneAbstraction(ABC):
 
     def __init__(self):
         self._id = -1
-        self.root_key = "ROOT [{}]".format(self.next_id())
+        self.root = "ROOT"
+        self.root_key = "{} [{}]".format(self.root, self.next_id())
+        self.last_inserted = None
         self.graph = None
 
     @abstractmethod
@@ -47,6 +50,13 @@ class GraphBackboneAbstraction(ABC):
         pass
 
     @abstractmethod
+    def parents(self, source):
+        """
+        Returns a generator with parents of 'source'. Assumes a directed graph
+        """
+        pass
+
+    @abstractmethod
     def exists_path(self, a, b):
         """
         Returns a boolean indicating if there exists a path between nodes 'a' and 'b'
@@ -69,6 +79,27 @@ class GraphBackboneAbstraction(ABC):
         Returns a generator of tuples (pairs od edges)
         """
         pass
+
+    def cursor(self):
+        """
+        Returns the last inserted node of the graph
+        """
+        return self.last_inserted
+
+    def cursor_data(self, selector=None):
+        """
+        Returns the data belonging to the last inserted node
+        If 'fields' is set return just a samller view of the content
+        """
+        if not selector:
+            return self.__getitem__(self.cursor())
+
+        elif isinstance(selector, list):
+            data = self.__getitem__(self.cursor())
+            return {f: data[f] for f in selector}
+
+        else:
+            return self.__getitem__(self.cursor())[selector]
 
     def next_id(self):
         self._id += 1
