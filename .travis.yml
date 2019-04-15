@@ -4,7 +4,6 @@ python:
   - "3.6"
 
 install:
-  - "pip install -e . --upgrade"
   - "pip install poetry"
   - "poetry install"
 
