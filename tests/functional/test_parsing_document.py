@@ -2,7 +2,7 @@ import re
 
 from unittest import TestCase
 
-from graphify.parser import Parser
+from graphify.parsing import Parser
 
 
 class TestBuildGraph(TestCase):

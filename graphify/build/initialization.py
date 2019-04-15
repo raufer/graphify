@@ -9,8 +9,9 @@ def initialize_backbone(fw):
     """
     base = fw.root
     key = fw.root_key
+    meta = base.lower()
 
     fw.initialize()
-    fw.add_node(key, meta=base.lower(), level=0, content=[], pad=0)
+    fw.add_node(key, meta=meta, level=0, content=[], pad=False, id=('/' + meta))
 
     return fw

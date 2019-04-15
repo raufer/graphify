@@ -1,6 +1,5 @@
 import re
 import logging
-
 import networkx as nx
 
 from nxpd import draw
@@ -11,8 +10,8 @@ logger = logging.getLogger(__name__)
 
 class Document(object):
     """
-    document representation providing useful functions to extract information from documents
-    conversion to json representation is also avaiable
+    Document representation providing useful functions to extract information from documents
+    conversion to json representation is also available
     """
 
     def __init__(self, graph, root):
@@ -40,12 +39,12 @@ class Document(object):
 
     def to_dict(self):
         """
-        parser from nx graph representation to dict/json
+        parsing from nx graph representation to dict/json
         """
         result = {"document_name": self.root_node()["meta"], "nodes": []}
         for node, data in self.traverse():
-            successors = self.successors(node)
-            predecessors = self.predecessors(node)
+            successors = list(self.successors(node))
+            predecessors = list(self.predecessors(node))
             result["nodes"].append(
                 {"key": node, "content": data, "successors": successors, "predecessors": predecessors})
         return result
@@ -224,6 +223,9 @@ class Document(object):
 
     def __getitem__(self, key):
         return self.graph.node[key]
+
+    def __setitem__(self, key, value):
+        self.graph.node[key] = value
 
     def __repr__(self):
         """Useful document representation"""

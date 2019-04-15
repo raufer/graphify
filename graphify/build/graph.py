@@ -1,3 +1,5 @@
+import os
+
 from graphify.ops.search import filter_bfs
 
 
@@ -12,17 +14,46 @@ def handle_match(graph, match, insert_level, descriptor):
     - a node with a higher level was detected and padding is not required
     - every other case (same level or less)
     """
-    hit = match.group().strip()
+    meta = _meta_from_match(match)
     last_node = graph.cursor()
     current_level = graph[last_node]['level']
 
     if insert_level > current_level and descriptor['padding']:
-        last_node = _pad(graph, last_node, current_level + 1, insert_level, descriptor)
+        parent_node = _pad(graph, last_node, current_level + 1, insert_level, descriptor)
+
+    elif insert_level > current_level:
+        parent_node = last_node
 
     elif insert_level < current_level:
-        last_node = next(filter_bfs(graph, lambda x: x['level'] == insert_level - 1))
+        parent_node = next(filter_bfs(graph, lambda x: x['level'] == insert_level - 1))
 
-    return _add_node(graph, hit, last_node, meta=hit, level=insert_level, pad=0, content=[])
+    else:
+        parent_node = next(iter(list(graph.predecessors(last_node)) or []), None)
+
+    data = {
+        'meta': meta,
+        'level': insert_level,
+        'pad': False,
+        'content': []
+    }
+
+    return _add_node(graph, meta, parent_node, **data)
+
+
+def _meta_from_match(match) -> str:
+    """
+    A node is created when a pattern is observed on a given line
+    this returns a 'match' structure that needs to be converted into a short string identifier
+    """
+    groups = match.groups()
+
+    if not groups:
+        meta = match.group()
+    else:
+        meta = groups[0] or groups[1]
+
+    meta = meta.strip()
+    return meta
 
 
 def _add_node(graph, key, parent, **data):
@@ -33,11 +64,25 @@ def _add_node(graph, key, parent, **data):
     Returns a key to the newly created node
     """
     #  TODO: 'parent' is assuming a direct graph and a single connection. This assumption is too much restrictive
+    id = graph.next_id()
+    new_node = _build_node_key(key, id)
 
-    new_node = _build_node_key(key, graph.next_id())
+    data['id'] = _unique_path_identifier(graph, key, parent, id)
+
     graph.add_node(new_node, **data)
     graph.add_edge(parent, new_node)
     return new_node
+
+
+def _unique_path_identifier(graph, key, parent, id):
+    """
+    Generates a unique path identifier for each node
+    The ID should follow a namespace convention like a filesystem
+    and take the shape of the document hierarchy
+    """
+    parent_identifier = graph[parent]['id']
+    identifier = os.path.join(parent_identifier, f"{key.lower()}-{str(id)}")
+    return identifier
 
 
 def _pad(graph, last_node, level, concrete_level, descriptor):
@@ -52,7 +97,7 @@ def _pad(graph, last_node, level, concrete_level, descriptor):
         return last_node
     else:
         meta = descriptor['components'][level - 1]
-        node = _add_node(graph, meta, last_node, meta=meta, level=level, pad=1, content=[])
+        node = _add_node(graph, meta, last_node, meta=meta, level=level, pad=True, content=[])
         return _pad(graph, node, level + 1, concrete_level, descriptor)
 
 

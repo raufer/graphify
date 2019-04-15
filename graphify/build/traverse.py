@@ -23,7 +23,7 @@ def build(it, descriptor):
 
     graph = _iterative_traverse(it, graph, "ROOT [0]", descriptor)
 
-    logger.debug("Raw graph constructed with '{0}' nodes".format(nx.number_of_nodes(graph)))
+    logger.info("Raw graph constructed with '{0}' nodes".format(nx.number_of_nodes(graph)))
 
     return graph
 

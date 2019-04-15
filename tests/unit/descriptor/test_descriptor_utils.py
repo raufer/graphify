@@ -2,7 +2,10 @@ import re
 
 from unittest import TestCase
 
-from graphify.descriptor.utils import compile_patterns
+from graphify.descriptor.utils import compile_patterns, extend_internal_patterns
+
+from hypothesis import given
+from hypothesis import strategies as st
 
 
 class TestDescriptorUtils(TestCase):
@@ -35,6 +38,25 @@ class TestDescriptorUtils(TestCase):
 
         for pattern in compiled_descriptor['patterns']:
             self.assertEqual(str(pattern.__class__), "<class '_sre.SRE_Pattern'>")
+
+    def test_extend_internal_patterns_example(self):
+        """
+        Utility method. Given a descriptor configuration extend the patterns to support internal patterns
+        e.g. 'patterns': [r'A', r'B', r'C'] -> [r'A', r'B', r'C']
+        """
+        descriptor = {
+            'components': ['A', 'B', 'C'],
+            'patterns': [r'A', r'B', r'C']
+        }
+
+        expected = {
+            'components': ['A', 'B', 'C'],
+            'patterns': [r'(?:\[\[(A)\]\]|(A))', r'(?:\[\[(B)\]\]|(B))', r'(?:\[\[(C)\]\]|(C))'],
+            'exclude': [r'\[\[A\]\]\s?', r'\[\[B\]\]\s?', r'\[\[C\]\]\s?']
+        }
+
+        result = extend_internal_patterns(descriptor)
+        self.assertDictEqual(result, expected)
 
     def test_pattern_compiling_with_flags(self):
         """

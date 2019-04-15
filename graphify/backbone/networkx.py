@@ -29,6 +29,9 @@ class NetworkxImplementation(GraphBackboneAbstraction):
     def nodes(self):
         return list(self.graph.nodes())
 
+    def nodes_iter(self, data=False):
+        return self.graph.nodes(data=data)
+
     def edges(self, key=None):
         if not key:
             return list(self.graph.edges())
@@ -37,6 +40,12 @@ class NetworkxImplementation(GraphBackboneAbstraction):
 
     def parents(self, source):
         return self.graph.predecessors(source)
+
+    def predecessors(self, source):
+        return self.parents(source)
+
+    def successors(self, source):
+        return self.graph.successors(source)
 
     def exists_path(self, node_a, node_b):
         return nx.has_path(self.graph, node_a, node_b)
@@ -47,8 +56,15 @@ class NetworkxImplementation(GraphBackboneAbstraction):
     def bfs(self, source=None):
         return nx.bfs_edges(self.graph, source=source or self.root_key)
 
+    def copy(self):
+        g = NetworkxImplementation()
+        g.graph = self.graph.copy()
+        g.last_inserted = str(self.last_inserted)
+        return g
+
     def __getitem__(self, key):
         return self.graph.node[key]
+
 
 if __name__ == '__main__':
     NetworkxImplementation()

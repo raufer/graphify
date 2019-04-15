@@ -1,5 +1,7 @@
 import re
 
+from typing import Dict
+
 
 def compile_patterns(descriptor):
     """
@@ -8,9 +10,11 @@ def compile_patterns(descriptor):
     """
     descriptor_copy = dict(descriptor)
 
+    to_compile = ['patterns', 'exclude']
+
     for k, v in descriptor_copy.items():
 
-        if 'pattern' in k.lower():
+        if k.lower() in to_compile:
             compiled = [_compile(p) if isinstance(p, str) else p for p in v]
             descriptor_copy[k] = compiled
 
@@ -34,8 +38,8 @@ def _compile(pattern):
 
 def normalize_descriptor(descriptor):
     """
-    The parser logic might assume the user describes specific behaviour on the descriptor
-    If not, some defaults can be used to facilitate the use of the parser
+    The parsing logic might assume the user describes specific behaviour on the descriptor
+    If not, some defaults can be used to facilitate the use of the parsing
 
     Returns a new descriptor with default behaviours
     """
@@ -57,4 +61,21 @@ def normalize_descriptor(descriptor):
     if 'padding' not in descriptor:
         descriptor['padding'] = False
 
+    if 'exclude' not in descriptor:
+        descriptor['exclude'] = []
+
+    return descriptor
+
+
+def extend_internal_patterns(descriptor: Dict) -> Dict:
+    """
+    Utility method. Given a descriptor configuration extend the patterns to support internal patterns
+    e.g. 'patterns': [r'(?:\[\[A\]\]|A)', r'(?:\[\[B\]\]|B)', r'(?:\[\[C\]\]|C)']
+    If the pattern has the following pattern '[[X]]' we also mark them to be excluded after parsing
+    """
+    patterns = [rf"(?:\[\[({p})\]\]|({p}))" for p in descriptor['patterns']]
+    exclude = [rf"\[\[{p}\]\]\s?" for p in descriptor['patterns']]
+
+    descriptor['patterns'] = patterns
+    descriptor['exclude'] = descriptor.get('exclude', []) + exclude
     return descriptor

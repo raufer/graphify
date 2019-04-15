@@ -1,7 +1,9 @@
 import unittest
 from operator import itemgetter
 
-from graphify.utils.recipes import explode, merge_dicts
+from graphify.utils.recipes import explode, merge_dicts, flatten
+from hypothesis import given
+from hypothesis import strategies as st
 
 
 class TestRecipes(unittest.TestCase):
@@ -19,6 +21,11 @@ class TestRecipes(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    @given(st.lists(st.lists(st.integers())))
+    def test_flatten(self, x):
+        y = list(flatten(x))
+        assert len(y) == sum(map(len, x))
 
     def test_explode(self):
         """

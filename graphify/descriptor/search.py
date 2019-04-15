@@ -14,7 +14,7 @@ def search_descriptor_patterns(x, descriptor):
 
     hit, level = next((
         (search(pattern, x), i+1)
-        for i, pattern in enumerate(descriptor['patterns'])if is_hit(pattern, x)), (None, None)
+        for i, pattern in enumerate(descriptor['patterns']) if is_hit(pattern, x)), (None, None)
     )
 
     return hit, level

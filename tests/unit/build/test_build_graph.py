@@ -4,7 +4,8 @@ from unittest import TestCase
 
 from graphify.backbone.networkx import NetworkxImplementation
 from graphify.build.initialization import initialize_backbone
-from graphify.build.graph import _add_node, _pad, handle_match
+from graphify.build.graph import _add_node, _pad, _meta_from_match
+from graphify.build.graph import handle_match
 from graphify.descriptor.utils import compile_patterns
 
 
@@ -200,11 +201,36 @@ class TestBuildGraph(TestCase):
 
         self.assertEqual(sorted([r for _, r in graph.edges("ROOT [0]")]), sorted(['Test Match [3]', 'Test Match [1]']))
 
+    def test_handle_match(self):
+        pattern = r'(?:\[\[(A)\]\]|(A))'
+        match = re.match(pattern, '[[A]]F')
+        result = _meta_from_match(match)
+        assert result == 'A'
 
+        pattern = r'(?:\[\[(A)\]\]|(A))'
+        match = re.match(pattern, 'AF')
+        result = _meta_from_match(match)
+        assert result == 'A'
 
+    def test_node_id(self):
+        """
+        `_node_id` should generate a unique id for each node
+        The ID should follow a namespace convention like a filesystem
+        and take the shape of the document hierarchy
+        """
+        graph = initialize_backbone(NetworkxImplementation())
 
+        data = {'a': 1, 'b': 2}
+        key = 'NEW NODE'
+        parent = "ROOT [0]"
+        new_node = _add_node(graph, key, parent, **data)
 
+        data = {}
+        key = 'NEW NODE'
+        parent = "ROOT [0]"
+        id = 10
 
+        identifier = _unique_path_identifier(graph, key, parent, id)
 
-
+        assert identifier == '/root/'
 

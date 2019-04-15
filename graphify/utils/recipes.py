@@ -6,9 +6,11 @@ from collections import MutableMapping
 from itertools import chain, islice
 
 
-def flatten(listOfLists):
-    "Flatten one level of nesting"
-    return chain.from_iterable(listOfLists)
+def flatten(ls):
+    """
+    Flatten one level of nesting
+    """
+    return chain.from_iterable(ls)
 
 
 def consume(iterator, n=None):
