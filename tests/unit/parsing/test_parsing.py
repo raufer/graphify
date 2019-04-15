@@ -76,27 +76,6 @@ class TestBuildGraph(TestCase):
             "2.1.2 [12]"
         ])
 
-        from pprint import pprint
-        from graphify.parsing import parse_filepath
-
-        descriptor = {
-            'components': ['Chapter', 'Article', 'Paragraph'],
-            'patterns': [r'CHAPTER', r'ARTICLE', r'PARAGRAPH']
-        }
-
-        import json
-        doc = parse_filepath('/Users/raulferreira/waymark/experiments/similarity/documents/caversandco-aml-policy-v1.txt', descriptor)
-        d = doc.to_dict()
-        with open('/Users/raulferreira/waymark/experiments/similarity/documents/caversandco-aml-policy-v1.json', 'w') as f:
-            json.dump(d, f, indent=4)
-
-        for i, n in enumerate(doc.traverse()):
-            print(n)
-            if i > 2:
-                break
-
-        raise ValueError
-
     def test_post_build_processing_remove_occurrences(self):
         """
         Given an iterable content plus a hierarchy descriptor, we should be able to build a graph with
