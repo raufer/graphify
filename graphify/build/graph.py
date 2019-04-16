@@ -34,7 +34,7 @@ def handle_match(graph, match, insert_level, descriptor):
         'meta': meta,
         'level': insert_level,
         'pad': False,
-        'content': []
+        'text': []
     }
 
     return _add_node(graph, meta, parent_node, **data)
@@ -109,6 +109,6 @@ def append_content(graph, line):
     """
     Every new line should be appended as content to the node currently in focus
     """
-    graph.cursor_data('content').append(line)
+    graph.cursor_data('text').append(line)
     return graph
 

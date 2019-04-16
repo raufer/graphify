@@ -67,7 +67,7 @@ def post_build_process(document: Document, descriptor: Dict) -> Document:
     def remove_occurrences(data):
         data['content'] = [
             reduce(lambda acc, x: x.sub('', acc), descriptor['exclude'], line)
-            for line in data['content']
+            for line in data['text']
         ]
         return data
 

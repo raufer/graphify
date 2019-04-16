@@ -12,6 +12,6 @@ def initialize_backbone(fw):
     meta = base.lower()
 
     fw.initialize()
-    fw.add_node(key, meta=meta, level=0, content=[], pad=False, id=('/' + meta))
+    fw.add_node(key, meta=meta, level=0, text=[], pad=False, id=('/' + meta))
 
     return fw
