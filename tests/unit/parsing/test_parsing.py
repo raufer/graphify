@@ -100,7 +100,7 @@ class TestBuildGraph(TestCase):
 
         doc = post_build_process(doc, descriptor)
 
-        result = [n['content'] for _, n in doc.traverse()]
+        result = [n['text'] for _, n in doc.traverse()]
         expected = [[], ["Chapter I", "This is chapter I text"], ["Article I", "This is article I text"]]
         self.assertListEqual(result, expected)
 

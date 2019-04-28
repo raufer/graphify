@@ -65,7 +65,7 @@ def post_build_process(document: Document, descriptor: Dict) -> Document:
           e.g. parsing hints like '[[Component]]'
     """
     def remove_occurrences(data):
-        data['content'] = [
+        data['text'] = [
             reduce(lambda acc, x: x.sub('', acc), descriptor['exclude'], line)
             for line in data['text']
         ]
