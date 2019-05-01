@@ -7,9 +7,9 @@ authors = ["raul ferreira <raufer92@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.6"
 pytest = "^4.4"
-networkx = "=2.1"
 nxpd = "^0.2.0"
 hypothesis = "^4.15"
+networkx = "=1.11"
 
 [tool.poetry.dev-dependencies]
 

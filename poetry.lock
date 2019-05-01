@@ -57,10 +57,10 @@ description = "Python package for creating and manipulating graphs and networks"
 name = "networkx"
 optional = false
 python-versions = "*"
-version = "2.1"
+version = "1.11"
 
 [package.dependencies]
-decorator = ">=4.1.0"
+decorator = ">=3.4.0"
 
 [[package]]
 category = "main"
@@ -128,7 +128,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*"
 version = "1.12.0"
 
 [metadata]
-content-hash = "ef9b8f590123ca4bdffea968f4bbc760154b085f1f7dbaf4e849f34214eafede"
+content-hash = "b461db405ecc0ac0f16a370b3e8950f66099c9cf572add6cd944f66387beb78f"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -138,7 +138,7 @@ colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", 
 decorator = ["86156361c50488b84a3f148056ea716ca587df2f0de1d34750d35c21312725de", "f069f3a01830ca754ba5258fde2278454a0b5b79e0d7f5c13b3b97e57d4acff6"]
 hypothesis = ["2b6e270c7d96c88f54c8a12d9ab9dc802fb7a4e44f2ccc94ac1bddf0df1533b7", "419ac5be1fa083eeb0a0a7d393e0b722dd246bdb44d91e9bec4bfd0a6b4680dd", "44f6a0285e18ad42aba341c846a92e2d68cb2ac1ff0bff7cb08c64e0afdac725"]
 more-itertools = ["2112d2ca570bb7c3e53ea1a35cd5df42bb0fd10c45f0fb97178679c3c03d64c7", "c3e4748ba1aad8dba30a4886b0b1a2004f9a863837b8654e7059eebf727afa5a"]
-networkx = ["64272ca418972b70a196cb15d9c85a5a6041f09a2f32e0d30c0255f25d458bb1"]
+networkx = ["0d0e70e10dfb47601cbb3425a00e03e2a2e97477be6f80638fef91d54dd1e4b8", "1b229b54fe9ccb009cee4de02a88552191497a542a7d5d34adab216b9f15c1ff", "38e6bd32c0a2ad26439489d9b51e2684c01f352b536aaabbe499a3ad8c89f52b", "3fbc044a40bc847ae28b65850b759f3d6c697ee7ff459a02dc8f8bc4d849dc7e", "b3e0144d5fe6b7479b694e1b598a5545a38f3fc6f1e3c09173eb30f0c7a5770e"]
 nxpd = ["634e51fdfec1f6f84a752446c034e9fb070cd24b3a18821b1bbed221b4d84dfb", "9a3e2b36a4d0bdae4e9b8df219a5325ee78d685a67621350f6cd548019dbcc57"]
 pluggy = ["19ecf9ce9db2fce065a7a0586e07cfb4ac8614fe96edf628a264b1c70116cf8f", "84d306a647cc805219916e62aab89caa97a33a1dd8c342e87a37f91073cd4746"]
 py = ["64f65755aee5b381cea27766a3a147c3f15b9b6b9ac88676de66ba2ae36793fa", "dc639b046a6e2cff5bbe40194ad65936d6ba360b52b3c3fe1d08a82dd50b5e53"]
