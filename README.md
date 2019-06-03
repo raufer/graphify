@@ -7,6 +7,27 @@ The following pipeline is assumed:
 ```
 [raw_source] -> [lines] -> [graph]
 ```
+
+In its most simple form, the usage is pretty simple:
+
+```
+from graphify.parsing import parse_iterable
+
+it = [
+    "[[Chapter]] Chapter I",
+    "This is chapter I text",
+    "[[Article]] Article I",
+    "This is article I text",
+]
+
+descriptor = {
+    'components': ['Chapter', 'Article'],
+    'patterns': ['Chapter', 'Article']
+}
+
+doc = parse_iterable(text, descriptor)
+```
+
 After having a list of lines that represent the text content of the document, we need to parse it into a graph.
 
 Suppose we needed to capture the inherent graph structure of the following text (in list form).
