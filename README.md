@@ -40,7 +40,9 @@ Forward Currency Contracts are restricted to those transacted with banks identif
 The parser, in its most simple form, will need a `descriptor` that describes the hierarchical structure of the document along with a regex (can be customized to use a custom function) to detect each component.
 
 ```python
-from graphify.parser import Parser
+from graphify.parsing import parse_iterable
+
+text = [...]
 
 
 descriptor = {
@@ -48,17 +50,10 @@ descriptor = {
     'patterns': [r'^Schedule\s\d{1,2}', r'^PART\s\d{1,2}', r'^\d{1,2}\.\s', r'^\d{1,2}\.\d{1,2}\.\s', r'^\d{1,2}\.\d{1,2}\.\d{1,2}\s']
 }
 
-p = Parser(descriptor)
-
-doc = p.parse(text)
+doc = parse_iterable(text, descriptor)
 ```
 
-We can print its structure:
-
-```python
-print(doc)
-```
-
+Which will result in the following structure
 ```
 Schedule 1
         PART 1
@@ -100,72 +95,5 @@ descriptor = {
 ```
 
 If more complex logic is needed the parser can be customized.
-
-## Document Representation
-
-A document is represented internally as a graph. 
-
-```python
-from graphify.models.document import Document
-```
-
-This representation is common regardless of the source.
-
-We make use of the library `networkx` to support the basic graph operations.
-
-The in memory representation is done by a flat list of nodes.
-
-```
-graph = {
-	'document_name': name,
-	'nodes': [node_1, node_2, ... node_n]
-}
-```
-
-```
-node = {
-	'key': key,
-	'successors': [suc1, suc2, ...],
-	'predecessors': [pre1, pre2, ...],
-	'content': {}
-}
-```
-
-The `content` field contains generic, document-specific information that is relevant to a given node.
-
-- **level**: the depth of the node
-- **meta**: a meta title for the node if relevant e.g. "Part II"
-- **text**: a list of text lines
-- **pad**: a flag indicating if the node is present just for enforcing a given structure
-
-A document can be exported to a json format by calling `to_dict()`
-
-```python
-p = Parser(descriptor)
-
-doc =  p.parse_filepath(filepath)
-
-doc.to_dict()
-```
-
-Additionally we can create a document given its json representation:
-
-```python
-doc = Document.from_dict(json.load(filepath))
-```
-
-We can traverse a document in the natural order on which one reads a document (dfs) by doing:
-```python
-for key, data in doc.traverse():
-    #  key is the hash key of the node
-    #  data is a dict that contains the data for the node
-```
-
-To search a node by its `meta` field:
-
-```python
-doc.search_by_pattern(pattern)
-```
-
 
 
