@@ -25,7 +25,7 @@ descriptor = {
     'patterns': ['Chapter', 'Article']
 }
 
-doc = parse_iterable(text, descriptor)
+doc = parse_iterable(it, descriptor)
 ```
 
 After having a list of lines that represent the text content of the document, we need to parse it into a graph.
