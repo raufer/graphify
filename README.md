@@ -117,4 +117,44 @@ descriptor = {
 
 If more complex logic is needed the parser can be customized.
 
+### Descriptor
 
+So the general form of the patterns is the following:
+
+```
+descriptor = {
+    'components': ['Section', 'Subsection'],
+    'patterns': [r'^\d{1,2}[A-Z]?\.?\s', r'^\d{1,2}[A-Z]?\.\d{1,2}\s']
+}
+```
+
+However, if the tags are artificially controlled by us, e.g. by inserting them into the text (lets take the ``[[`` as the de facto way of artifically inserting tags)
+
+```
+it = [
+    "[[Chapter]] Chapter I",
+    "This is chapter I text",
+    "[[Article]] Article I",
+    "This is article I text",
+]
+```
+
+Then you can use a sortcut in the `patterns` fields, i.e.
+
+```
+descriptor = {
+    'components': ['Chapter', 'Article'],
+    'patterns': ['Chapter', 'Article']
+}
+```
+
+Instead of
+
+```
+descriptor = {
+    'components': ['Chapter', 'Article'],
+    'patterns': ['[[Chapter]]', '[[Article]]']
+}
+```
+
+Additionally the parsing will get rid of the tags and take care of the extra spaces in the cases that the `pattern` is followed by a space, e.g. `[[Chapter]] Chapter I` -> ``Chapter I``
