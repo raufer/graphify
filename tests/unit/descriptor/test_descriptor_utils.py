@@ -37,7 +37,7 @@ class TestDescriptorUtils(TestCase):
         self.assertListEqual(compiled_descriptor['components'], ['A', 'B', 'C'])
 
         for pattern in compiled_descriptor['patterns']:
-            self.assertEqual(str(pattern.__class__), "<class '_sre.SRE_Pattern'>")
+            self.assertEqual(str(pattern.__class__), "<class 're.Pattern'>")
 
     def test_extend_internal_patterns_example(self):
         """

@@ -43,7 +43,11 @@ def _iterative_traverse(iterator, graph, last_node, descriptor):
         match, level = search_descriptor_patterns(line, descriptor)
 
         if match:
-            _ = handle_match(graph, match, level, descriptor)
+            try:
+                _ = handle_match(graph, match, level, descriptor)
+            except Exception as e:
+                print(match, level, descriptor)
+                raise e
 
         graph = append_content(graph, line)
 

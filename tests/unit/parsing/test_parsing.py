@@ -104,4 +104,36 @@ class TestBuildGraph(TestCase):
         expected = [[], ["Chapter I", "This is chapter I text"], ["Article I", "This is article I text"]]
         self.assertListEqual(result, expected)
 
+    def test_hierarchy_jumps(self):
+        """
+        Jumps in hierarchy should be allowed
+        """
+        it = [
+            "[[Chapter]] Chapter I",
+            "This is chapter I text",
+            "[[Article]] Article I",
+            "This is article I text",
+        ]
+
+        descriptor = {
+            'components': ['Chapter', 'Section', 'Sub-section', 'Article'],
+            'patterns': ['Chapter', 'Section', 'Sub-section', 'Article']
+        }
+
+        doc = parse_iterable(it, descriptor)
+
+        def identifier(x):
+            reg = re.compile(r'\[(\d+\_?(\d+)?)[a-z]?\]')
+            return int(reg.search(x).groups(0)[0])
+
+        reading_order = sorted(doc.graph.nodes(), key=identifier)
+
+        expected = [
+            "ROOT [0]",
+            "Chapter [1]",
+            "Article [2]",
+        ]
+
+        self.assertListEqual(reading_order, expected)
+
 
