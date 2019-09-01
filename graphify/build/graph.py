@@ -50,7 +50,7 @@ def _meta_from_match(match) -> str:
     if not groups:
         meta = match.group()
     else:
-        meta = groups[0] or groups[1]
+        meta = next(i for i in groups if i)
 
     meta = meta.strip()
     return meta
