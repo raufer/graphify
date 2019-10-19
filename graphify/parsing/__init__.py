@@ -31,15 +31,17 @@ class Parser(object):
             return self.parse(lines)
 
 
-def parse_iterable(it: Iterable[str], descriptor: Dict) -> Document:
+def parse_iterable(it: Iterable[str], descriptor: Dict, name: str = 'ROOT') -> Document:
     """
     Given a descriptor that describes the hierarchical structure of an iterable
     parse it into a graph representation
+
+    'name' is the document name without spaces
     """
     descriptor = extend_internal_patterns(descriptor)
     descriptor = compile_patterns(descriptor)
 
-    graph = build(it, descriptor)
+    graph = build(it, descriptor, name)
     document = Document(graph, "ROOT [0]")
 
     document = post_build_process(document, descriptor)

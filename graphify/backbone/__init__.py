@@ -10,9 +10,9 @@ class GraphBackboneAbstraction(ABC):
     The goal of this contract is to abstract the graph framework being used
     """
 
-    def __init__(self):
+    def __init__(self, root="ROOT"):
         self._id = -1
-        self.root = "ROOT"
+        self.root = root
         self.root_key = "{} [{}]".format(self.root, self.next_id())
         self.last_inserted = None
         self.graph = None

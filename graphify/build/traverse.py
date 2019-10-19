@@ -11,11 +11,11 @@ from graphify.descriptor.utils import normalize_descriptor
 logger = logging.getLogger(__name__)
 
 
-def build(it, descriptor):
+def build(it, descriptor, name='ROOT'):
     """
     Initialize the empty raw graph and parse the iterable structure 'it'
     """
-    graph = initialize_graph()
+    graph = initialize_graph(name)
 
     descriptor = normalize_descriptor(descriptor)
 
