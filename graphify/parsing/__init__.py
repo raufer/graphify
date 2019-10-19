@@ -42,7 +42,7 @@ def parse_iterable(it: Iterable[str], descriptor: Dict, name: str = 'ROOT') -> D
     descriptor = compile_patterns(descriptor)
 
     graph = build(it, descriptor, name)
-    document = Document(graph, "ROOT [0]")
+    document = Document(graph, "{} [0]".format(name))
 
     document = post_build_process(document, descriptor)
     return document

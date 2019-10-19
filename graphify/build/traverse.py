@@ -21,7 +21,7 @@ def build(it, descriptor, name='ROOT'):
 
     it = dropwhile(descriptor['startParsing'], it)
 
-    graph = _iterative_traverse(it, graph, "ROOT [0]", descriptor)
+    graph = _iterative_traverse(it, graph, "{} [0]".format(name), descriptor)
 
     logger.info("Raw graph constructed with '{0}' nodes".format(nx.number_of_nodes(graph)))
 
