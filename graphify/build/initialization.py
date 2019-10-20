@@ -9,7 +9,7 @@ def initialize_backbone(fw):
     """
     base = fw.root
     key = fw.root_key
-    meta = base.lower()
+    meta = base.lower().replace(' ', '-')
 
     fw.initialize()
     fw.add_node(key, meta=meta, level=0, text=[], pad=False, id=('/' + meta))
