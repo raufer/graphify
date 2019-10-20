@@ -28,7 +28,9 @@ def handle_match(graph, match, insert_level, descriptor):
         parent_node = next(filter_bfs(graph, lambda x: x['level'] <= insert_level - 1))
 
     else:
-        parent_node = next(iter(list(graph.predecessors(last_node)) or []), None)
+        # parent_node = next(iter(list(graph.predecessors(last_node)) or []), None)
+        nodes = reversed([a for a, _ in graph.dfs()])
+        parent_node = next(n for n in nodes if graph[n]['level'] <= insert_level - 1)
 
     data = {
         'meta': meta,
