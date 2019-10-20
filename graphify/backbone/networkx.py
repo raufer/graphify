@@ -23,6 +23,9 @@ class NetworkxImplementation(GraphBackboneAbstraction):
     def add_edge(self, a, b):
         self.graph.add_edge(a, b)
 
+    def add_edges_from(self, it):
+        self.graph.add_edges_from(it)
+
     def number_of_nodes(self):
         return nx.number_of_nodes(self.graph)
 

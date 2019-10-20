@@ -3,6 +3,8 @@ import logging
 import networkx as nx
 
 from nxpd import draw
+
+from graphify.backbone.networkx import NetworkxImplementation
 from graphify.utils.recipes import flatten
 
 logger = logging.getLogger(__name__)
@@ -51,7 +53,10 @@ class Document(object):
 
     @staticmethod
     def from_dict(d):
-        graph = nx.DiGraph()
+        root_node = d["nodes"][0]
+
+        graph = NetworkxImplementation(root_node['key'].split(' ')[0])
+        graph.initialize()
 
         # add nodes first
         for node_all_data in d["nodes"]:
@@ -64,7 +69,7 @@ class Document(object):
             graph.add_edges_from(map(lambda p: (p, key), node_all_data["predecessors"]))
             graph.add_edges_from(map(lambda s: (key, s), node_all_data["successors"]))
 
-        doc = Document(graph, 'ROOT [0]')
+        doc = Document(graph, root_node['key'])
 
         return doc
 
