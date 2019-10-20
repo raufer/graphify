@@ -57,7 +57,7 @@ class NetworkxImplementation(GraphBackboneAbstraction):
         return nx.bfs_edges(self.graph, source=source or self.root_key)
 
     def copy(self):
-        g = NetworkxImplementation()
+        g = NetworkxImplementation(self.root)
         g.graph = self.graph.copy()
         g.last_inserted = str(self.last_inserted)
         return g
