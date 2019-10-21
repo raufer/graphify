@@ -55,7 +55,7 @@ class Document(object):
     def from_dict(d):
         root_node = d["nodes"][0]
 
-        graph = NetworkxImplementation(root_node['key'].split(' ')[0])
+        graph = NetworkxImplementation(root_node['key'][:-4])
         graph.initialize()
 
         # add nodes first
