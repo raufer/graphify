@@ -1,4 +1,4 @@
-# Document Parsing
+# Graphify
 
 This repository has a simple document parser that can be easily customized to accommodate more complex parsing logic.
 
