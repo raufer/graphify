@@ -1,16 +1,21 @@
 # Graphify
 
-This repository has a simple document parser that can be easily customized to accommodate more complex parsing logic.
+## Motivation
 
-The following pipeline is assumed:
+This library helps converting text documents with an inherent hierarchy into a graph that captures
+that structure.
+
+The following working pipeline is assumed:
 
 ```
-[raw_source] -> [lines] -> [graph]
+[raw data] -> [lines of text] -> [graph]
 ```
+
+## Basic Usage
 
 In its most simple form, the usage is pretty simple:
 
-```
+```python
 from graphify.parsing import parse_iterable
 
 it = [
@@ -121,7 +126,7 @@ If more complex logic is needed the parser can be customized.
 
 So the general form of the patterns is the following:
 
-```
+```python
 descriptor = {
     'components': ['Section', 'Subsection'],
     'patterns': [r'^\d{1,2}[A-Z]?\.?\s', r'^\d{1,2}[A-Z]?\.\d{1,2}\s']
@@ -130,7 +135,7 @@ descriptor = {
 
 However, if the tags are artificially controlled by us, e.g. by inserting them into the text (lets take the ``[[`` as the de facto way of artifically inserting tags)
 
-```
+```python
 it = [
     "[[Chapter]] Chapter I",
     "This is chapter I text",
@@ -141,7 +146,7 @@ it = [
 
 Then you can use a sortcut in the `patterns` fields, i.e.
 
-```
+```python
 descriptor = {
     'components': ['Chapter', 'Article'],
     'patterns': ['Chapter', 'Article']
@@ -150,7 +155,7 @@ descriptor = {
 
 Instead of
 
-```
+```python
 descriptor = {
     'components': ['Chapter', 'Article'],
     'patterns': ['[[Chapter]]', '[[Article]]']
