@@ -163,3 +163,39 @@ descriptor = {
 ```
 
 Additionally the parsing will get rid of the tags and take care of the extra spaces in the cases that the `pattern` is followed by a space, e.g. `[[Chapter]] Chapter I` -> ``Chapter I``
+
+
+### Advanced Usage
+
+For some situations we might require to inject custom data into the parsing process; this comes in contrast to `grapfiphy` being responsible for creating the metadata that supports these documents. For example 
+we might be parsing a document that contains a valid URI for each section of the document. In these cases we might prefer to use these instead if relying on `grafiphy` to create new ones.
+
+```python
+it = [
+    "[[Chapter]]{'id': '/base/chapter/1'} Chapter I",
+    "This is chapter I text",
+    "[[Article]]{'id': '/base/article/1'} Article I",
+    "This is article I text",
+]
+
+descriptor = {
+    'components': ['Chapter', 'Section', 'Sub-section', 'Article'],
+    'patterns': ['Chapter', 'Section', 'Sub-section', 'Article']
+}
+
+doc = parse_iterable(it, descriptor)
+```
+
+This would result in two nodes, `Chapter` and `Article`, with custom node `ids`:
+
+```python
+result = [n for n in doc.graph.nodes(data=True)]
+
+expected = [
+    ('ROOT [0]', {'meta': 'root', 'level': 0, 'text': [], 'pad': False, 'id': '/root'}),
+    ('Chapter [1]', {'meta': 'Chapter', 'level': 1, 'pad': False, 'text': ["Chapter I", 'This is chapter I text'], 'id': '/base/chapter/1'}),
+    ('Article [2]', {'meta': 'Article', 'level': 4, 'pad': False, 'text': ["Article I", 'This is article I text'], 'id': '/base/article/1'})
+]
+```
+
+
