@@ -2,10 +2,11 @@ import re
 
 from unittest import TestCase
 
-from graphify.descriptor.utils import compile_patterns, extend_internal_patterns
+from graphify.descriptor.utils import compile_patterns
+from graphify.descriptor.utils import extend_internal_patterns
+from graphify.descriptor.utils import extend_descriptor_with_data_capture_group
 
-from hypothesis import given
-from hypothesis import strategies as st
+from graphify.descriptor.constants.patterns import DATA_NAMED_GROUP
 
 
 class TestDescriptorUtils(TestCase):
@@ -71,10 +72,28 @@ class TestDescriptorUtils(TestCase):
 
         self.assertDictEqual(descriptor, compiled_descriptor)
 
+    def test_add_custom_data_object(self):
+        descriptor = {
+            'components': ['A', 'B', 'C'],
+            'patterns': [r'A', r'B', r'C ']
+        }
+        expected = {
+            'components': ['A', 'B', 'C'],
+            'patterns': [rf'(?P<component>A){DATA_NAMED_GROUP}', rf'(?P<component>B){DATA_NAMED_GROUP}', rf'(?P<component>C ){DATA_NAMED_GROUP}']
+        }
+        result = extend_descriptor_with_data_capture_group(descriptor)
+        self.assertDictEqual(result, expected)
 
-
-
-
+        descriptor = {
+            'components': ['A', 'B', 'C'],
+            'patterns': [r'\[\[A\]\]', r'\[\[B\]\]', r'\[\[C\]\] ']
+        }
+        expected = {
+            'components': ['A', 'B', 'C'],
+            'patterns': [rf'(?P<component>\[\[A\]\]){DATA_NAMED_GROUP}', rf'(?P<component>\[\[B\]\]){DATA_NAMED_GROUP}', rf'(?P<component>\[\[C\]\] ){DATA_NAMED_GROUP}']
+        }
+        result = extend_descriptor_with_data_capture_group(descriptor)
+        self.assertDictEqual(result, expected)
 
 
 

@@ -8,7 +8,9 @@ sys.setrecursionlimit(100000)
 logger = logging.getLogger(__name__)
 
 logging.basicConfig(
-    stream=sys.stdout, level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s, %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%Y-%m-%d:%H:%M:%S',
+    level=logging.DEBUG
 )
+
 

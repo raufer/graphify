@@ -7,6 +7,7 @@ from graphify.backbone.initialization import initialize_graph
 from graphify.build.graph import handle_match, append_content
 from graphify.descriptor.search import search_descriptor_patterns
 from graphify.descriptor.utils import normalize_descriptor
+from graphify.ops.match import remove_descriptor_indicators
 
 logger = logging.getLogger(__name__)
 
@@ -45,8 +46,10 @@ def _iterative_traverse(iterator, graph, last_node, descriptor):
         if match:
             try:
                 _ = handle_match(graph, match, level, descriptor)
+                line = remove_descriptor_indicators(line, match)
+
             except Exception as e:
-                print(match, level, descriptor)
+                logger.error(f"match {match}, level {level}, descriptor {descriptor}")
                 raise e
 
         graph = append_content(graph, line)

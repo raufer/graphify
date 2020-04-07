@@ -136,4 +136,64 @@ class TestBuildGraph(TestCase):
 
         self.assertListEqual(reading_order, expected)
 
+    def test_simple_parsing(self):
+        it = [
+            "[[Chapter]] Chapter I",
+            "This is chapter I text",
+            "[[Article]] Article I",
+            "This is article I text",
+        ]
+
+        descriptor = {
+            'components': ['Chapter', 'Section', 'Sub-section', 'Article'],
+            'patterns': ['Chapter', 'Section', 'Sub-section', 'Article']
+        }
+
+        doc = parse_iterable(it, descriptor)
+
+        result = [n for n in doc.graph.nodes(data=True)]
+
+        expected = [
+            ('ROOT [0]', {'meta': 'root', 'level': 0, 'text': [], 'pad': False, 'id': '/root'}),
+            ('Chapter [1]', {'meta': 'Chapter', 'level': 1, 'pad': False, 'text': ["Chapter I", 'This is chapter I text'], 'id': '/root/chapter-1'}),
+            ('Article [2]', {'meta': 'Article', 'level': 4, 'pad': False, 'text': ["Article I", 'This is article I text'], 'id': '/root/chapter-1/article-2'})
+        ]
+
+        self.assertListEqual(result, expected)
+
+    def test_custom_ids(self):
+        """
+        Some sources are already structured and contain node IDs
+        that map back to valid URIs
+
+        In these cases we should be able to use these instead of
+        creating new ones internally
+        """
+        it = [
+            "[[Chapter]]{'id': '/base/chapter/1'} Chapter I",
+            "This is chapter I text",
+            "[[Article]]{'id': '/base/article/1'} Article I",
+            "This is article I text",
+        ]
+
+        descriptor = {
+            'components': ['Chapter', 'Section', 'Sub-section', 'Article'],
+            'patterns': ['Chapter', 'Section', 'Sub-section', 'Article']
+        }
+
+        doc = parse_iterable(it, descriptor)
+
+        result = [n for n in doc.graph.nodes(data=True)]
+
+        expected = [
+            ('ROOT [0]', {'meta': 'root', 'level': 0, 'text': [], 'pad': False, 'id': '/root'}),
+            ('Chapter [1]', {'meta': 'Chapter', 'level': 1, 'pad': False, 'text': ["Chapter I", 'This is chapter I text'], 'id': '/base/chapter/1'}),
+            ('Article [2]', {'meta': 'Article', 'level': 4, 'pad': False, 'text': ["Article I", 'This is article I text'], 'id': '/base/article/1'})
+        ]
+
+        self.assertListEqual(result, expected)
+
+
+
+
 

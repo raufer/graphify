@@ -1,15 +1,16 @@
 [tool.poetry]
 name = "graphify"
-version = "1.0.0"
+version = "0.1.0"
 description = ""
-authors = ["raul ferreira <raufer92@gmail.com>"]
+authors = ["raufer <raufer92@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-pytest = "^4.4"
+python = "^3.7"
+pytest = "4.4"
+hypothesis = "4.15"
+networkx = "1.11"
 nxpd = "^0.2.0"
-hypothesis = "^4.15"
-networkx = "=1.11"
+dictdiffer = "^0.8.1"
 
 [tool.poetry.dev-dependencies]
 

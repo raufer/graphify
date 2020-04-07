@@ -1,6 +1,8 @@
 import os
 
 from graphify.ops.search import filter_bfs
+from graphify.descriptor.utils import parse_custom_data_object
+from typing import Dict
 
 
 def handle_match(graph, match, insert_level, descriptor):
@@ -13,10 +15,16 @@ def handle_match(graph, match, insert_level, descriptor):
     - a node with a higher level was detected and padding is required
     - a node with a higher level was detected and padding is not required
     - every other case (same level or less)
+
+    The math can also contain custom user data via a named capture group `data`
+    e.g. [[component]]{data}
+    In case it has we overwrite those values with the ones defined by the user
     """
     meta = _meta_from_match(match)
     last_node = graph.cursor()
     current_level = graph[last_node]['level']
+
+    data = parse_custom_data_object(match)
 
     if insert_level > current_level and descriptor['padding']:
         parent_node = _pad(graph, last_node, current_level + 1, insert_level, descriptor)
@@ -33,10 +41,13 @@ def handle_match(graph, match, insert_level, descriptor):
         parent_node = next(iter(list(graph.predecessors(last_node)) or []), None)
 
     data = {
-        'meta': meta,
-        'level': insert_level,
-        'pad': False,
-        'text': []
+        **{
+            'meta': meta,
+            'level': insert_level,
+            'pad': False,
+            'text': []
+        },
+        **data
     }
 
     return _add_node(graph, meta, parent_node, **data)
@@ -54,7 +65,7 @@ def _meta_from_match(match) -> str:
     else:
         meta = next(i for i in groups if i)
 
-    meta = meta.strip()
+    meta = meta.strip().replace('[[', '').replace(']]', '')
     return meta
 
 
@@ -69,7 +80,7 @@ def _add_node(graph, key, parent, **data):
     id = graph.next_id()
     new_node = _build_node_key(key, id)
 
-    data['id'] = _unique_path_identifier(graph, key, parent, id)
+    data['id'] = data.get('id', _unique_path_identifier(graph, key, parent, id))
 
     graph.add_node(new_node, **data)
     graph.add_edge(parent, new_node)

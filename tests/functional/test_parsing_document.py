@@ -2,7 +2,7 @@ import re
 
 from unittest import TestCase
 
-from graphify.parsing import Parser
+from graphify.parsing import parse_iterable
 
 
 class TestBuildGraph(TestCase):
@@ -53,9 +53,7 @@ class TestBuildGraph(TestCase):
             'patterns': [r'^Schedule\s\d{1,2}', r'^PART\s\d{1,2}', r'^\d{1,2}\.\s', r'^\d{1,2}\.\d{1,2}\.\s', r'^\d{1,2}\.\d{1,2}\.\d{1,2}\s']
         }
 
-        p = Parser(descriptor)
-
-        doc = p.parse(self.text)
+        doc = parse_iterable(self.text, descriptor)
 
         def identifier(x):
             reg = re.compile(r'\[(\d+\_?(\d+)?)[a-z]?\]')

@@ -1,0 +1,1 @@
+DATA_NAMED_GROUP = r'(?P<data>{.+})?'

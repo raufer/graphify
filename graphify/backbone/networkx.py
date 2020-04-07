@@ -29,8 +29,8 @@ class NetworkxImplementation(GraphBackboneAbstraction):
     def number_of_nodes(self):
         return nx.number_of_nodes(self.graph)
 
-    def nodes(self):
-        return list(self.graph.nodes())
+    def nodes(self, data=False):
+        return list(self.graph.nodes(data))
 
     def nodes_iter(self, data=False):
         return self.graph.nodes(data=data)

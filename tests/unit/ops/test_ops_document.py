@@ -120,7 +120,7 @@ class TestOpsDocument(TestCase):
 
         descriptor = {
             'components': ['Schedule', 'Chapter', 'Article'],
-            'patterns': [r'^Schedule\s\d{1,2}', 'Chapter\s(?:I|II)', 'Article\s(?:I|II)']
+            'patterns': [r'^Schedule\s\d{1,2}', 'Chapter', 'Article']
         }
 
         doc = parse_iterable(it, descriptor)

@@ -1,5 +1,9 @@
+import logging
+
 from graphify.build.traverse import build
-from graphify.descriptor.utils import compile_patterns, extend_internal_patterns
+from graphify.descriptor.utils import compile_patterns
+from graphify.descriptor.utils import extend_internal_patterns
+from graphify.descriptor.utils import extend_descriptor_with_data_capture_group
 from graphify.models.document import Document
 
 from functools import reduce
@@ -7,6 +11,8 @@ from typing import Iterable
 from typing import Dict
 
 from graphify.ops.document import map_values
+
+logger = logging.getLogger(__name__)
 
 
 class Parser(object):
@@ -39,6 +45,7 @@ def parse_iterable(it: Iterable[str], descriptor: Dict, name: str = 'ROOT') -> D
     'name' is the document name without spaces
     """
     descriptor = extend_internal_patterns(descriptor)
+    descriptor = extend_descriptor_with_data_capture_group(descriptor)
     descriptor = compile_patterns(descriptor)
 
     graph = build(it, descriptor, name)

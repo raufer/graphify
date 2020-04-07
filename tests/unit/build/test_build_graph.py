@@ -67,7 +67,7 @@ class TestBuildGraph(TestCase):
         parent = "ROOT [0]"
         node = _add_node(graph, key, parent, **data)
 
-        last_node = _pad(graph, node, data['level']+1, 4, descriptor)
+        last_node = _pad(graph, node, data['level'] + 1, 4, descriptor)
 
         self.assertListEqual(sorted(graph.nodes()), sorted(['ROOT [0]', 'NEW NODE [1]', 'B [2]', 'C [3]']))
 
