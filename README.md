@@ -199,3 +199,37 @@ expected = [
 ```
 
 
+#### Metadata
+
+Different documents coming from different sources might have different metadata requirements; In order
+to not have to make any assumptions in `grafiphy` or introduce a awkward API to describe metadata, we suggest
+that this is done as an intermediary step:
+
+```python
+
+from graphify.parsing import parse_iterable
+
+it = [
+    "[[Chapter]] Chapter I",
+    "This is chapter I text",
+    "[[Article]] Article I",
+    "This is article I text",
+]
+
+descriptor = {
+    'components': ['Chapter', 'Article'],
+    'patterns': ['Chapter', 'Article']
+}
+
+doc = parse_iterable(it, descriptor)
+
+metadata = {
+    'title': 'A',
+    'year': 2000,
+    'industry': 'finance'
+}
+
+doc = {**doc.to_dict(), **metadata}
+```
+
+
