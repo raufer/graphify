@@ -203,7 +203,7 @@ expected = [
 
 Different documents coming from different sources might have different metadata requirements; In order
 to not have to make any assumptions in `grafiphy` or introduce a awkward API to describe metadata, we suggest
-that this is done as an intermediary step:
+that this is done as an intermediary step, e.g.:
 
 ```python
 
