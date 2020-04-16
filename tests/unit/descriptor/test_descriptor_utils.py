@@ -59,6 +59,21 @@ class TestDescriptorUtils(TestCase):
         result = extend_internal_patterns(descriptor)
         self.assertDictEqual(result, expected)
 
+    def test_extend_internal_patterns_example_with_more_than_component_same_hierarchy(self):
+        descriptor = {
+            'components': [['A', 'Z'], 'B', 'C'],
+            'patterns': [[r'A', r'Z'], r'B', r'C']
+        }
+
+        expected = {
+            'components': [['A', 'Z'], 'B', 'C'],
+            'patterns': [[r'(?:\[\[(A)\]\]|(A))', '(?:\[\[(Z)\]\]|(Z))'], r'(?:\[\[(B)\]\]|(B))', r'(?:\[\[(C)\]\]|(C))'],
+            'exclude': [r'\[\[A\]\]\s?', '\[\[Z\]\]\s?', r'\[\[B\]\]\s?', r'\[\[C\]\]\s?']
+        }
+
+        result = extend_internal_patterns(descriptor)
+        self.assertDictEqual(result, expected)
+
     def test_pattern_compiling_with_flags(self):
         """
         Given a descriptor configuration object the patterns can be regex objects if the user need a higher flexibility
@@ -91,6 +106,29 @@ class TestDescriptorUtils(TestCase):
         expected = {
             'components': ['A', 'B', 'C'],
             'patterns': [rf'(?P<component>\[\[A\]\]){DATA_NAMED_GROUP}', rf'(?P<component>\[\[B\]\]){DATA_NAMED_GROUP}', rf'(?P<component>\[\[C\]\] ){DATA_NAMED_GROUP}']
+        }
+        result = extend_descriptor_with_data_capture_group(descriptor)
+        self.assertDictEqual(result, expected)
+
+    def test_add_custom_data_object_with_different_components_same_hierarchy(self):
+        descriptor = {
+            'components': [['A', 'Z'], 'B', 'C'],
+            'patterns': [[r'A', r'Z'], r'B', r'C ']
+        }
+        expected = {
+            'components': [['A', 'Z'], 'B', 'C'],
+            'patterns': [[rf'(?P<component>A){DATA_NAMED_GROUP}', rf'(?P<component>Z){DATA_NAMED_GROUP}'], rf'(?P<component>B){DATA_NAMED_GROUP}', rf'(?P<component>C ){DATA_NAMED_GROUP}']
+        }
+        result = extend_descriptor_with_data_capture_group(descriptor)
+        self.assertDictEqual(result, expected)
+
+        descriptor = {
+            'components': [['A', 'Z'], 'B', 'C'],
+            'patterns': [[r'\[\[A\]\]', r'\[\[Z\]\]'], r'\[\[B\]\]', r'\[\[C\]\] ']
+        }
+        expected = {
+            'components': [['A', 'Z'], 'B', 'C'],
+            'patterns': [[rf'(?P<component>\[\[A\]\]){DATA_NAMED_GROUP}', rf'(?P<component>\[\[Z\]\]){DATA_NAMED_GROUP}'], rf'(?P<component>\[\[B\]\]){DATA_NAMED_GROUP}', rf'(?P<component>\[\[C\]\] ){DATA_NAMED_GROUP}']
         }
         result = extend_descriptor_with_data_capture_group(descriptor)
         self.assertDictEqual(result, expected)

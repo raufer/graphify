@@ -13,10 +13,12 @@ def compile_patterns(descriptor):
 
     to_compile = ['patterns', 'exclude']
 
+    compile = lambda p: _compile(p) if isinstance(p, str) else p
+
     for k, v in descriptor_copy.items():
 
         if k.lower() in to_compile:
-            compiled = [_compile(p) if isinstance(p, str) else p for p in v]
+            compiled = [[compile(i) for i in p] if isinstance(p, (tuple, list)) else compile(p) for p in v]
             descriptor_copy[k] = compiled
 
     return descriptor_copy
@@ -44,6 +46,7 @@ def normalize_descriptor(descriptor):
 
     Returns a new descriptor with default behaviours
     """
+    descriptor = descriptor.copy()
 
     stopParsing = descriptor.get('stopParsing', None)
     if not stopParsing:
@@ -65,6 +68,9 @@ def normalize_descriptor(descriptor):
     if 'exclude' not in descriptor:
         descriptor['exclude'] = []
 
+    # standard model to process patterns:
+    descriptor['patterns'] = [[p] if not isinstance(p, (list, tuple)) else p for p in descriptor['patterns']]
+
     return descriptor
 
 
@@ -75,11 +81,15 @@ def extend_internal_patterns(descriptor: Dict) -> Dict:
     If the pattern has the following pattern '[[X]]' we also mark them to be excluded after parsing
     """
     descriptor = descriptor.copy()
-    patterns = [rf"(?:\[\[({p})\]\]|({p}))" for p in descriptor['patterns']]
-    exclude = [rf"\[\[{p}\]\]\s?" for p in descriptor['patterns']]
+
+    make_pattern = lambda p: rf"(?:\[\[({p})\]\]|({p}))"
+    make_exclude = lambda p: rf"\[\[{p}\]\]\s?"
+
+    patterns = [make_pattern(p) if isinstance(p, str) else [make_pattern(i) for i in p] for p in descriptor['patterns']]
+    exclude = [[make_exclude(p)] if isinstance(p, str) else [make_exclude(i) for i in p] for p in descriptor['patterns']]
 
     descriptor['patterns'] = patterns
-    descriptor['exclude'] = descriptor.get('exclude', []) + exclude
+    descriptor['exclude'] = descriptor.get('exclude', []) + sum(exclude, [])
     return descriptor
 
 
@@ -96,9 +106,13 @@ def extend_descriptor_with_data_capture_group(descriptor: Dict) -> Dict:
     python dictionary (to be materialized via `eval`)
     """
     descriptor = descriptor.copy()
+    make_pattern = lambda pattern: f'(?P<component>{pattern}){DATA_NAMED_GROUP}'
+
     descriptor['patterns'] = [
-        f'(?P<component>{pattern}){DATA_NAMED_GROUP}' for pattern in descriptor['patterns']
+        make_pattern(pattern) if isinstance(pattern, str) else [make_pattern(p) for p in pattern]
+        for pattern in descriptor['patterns']
     ]
+
     return descriptor
 
 
