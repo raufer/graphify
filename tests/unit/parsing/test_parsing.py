@@ -217,8 +217,6 @@ class TestBuildGraph(TestCase):
         }
 
         doc = parse_iterable(it, descriptor)
-        print(doc)
-        raise ValueError
 
         result = [n for n in doc.graph.nodes(data=True)]
 
@@ -235,7 +233,48 @@ class TestBuildGraph(TestCase):
 
         self.assertListEqual(result, expected)
 
+    def test_document_with_gaps(self):
+        it = [
+            "[[Chapter]] Chapter I",
+            "This is chapter I text",
+            "[[Article]] Article I",
+            "This is article I text",
+            "[[Article]] Article II",
+            "This is article II text",
+            "[[Chapter]] Chapter II",
+            "This is chapter II text",
+            "[[Article]] Article I",
+            "This is article I text",
+            "[[Schedule]] Schedule I",
+            "This is schedule I text",
+            "[[Chapter]] Chapter I",
+            "This is chapter I text",
+            "[[Article]] Article I",
+            "This is article I text",
+        ]
 
+        descriptor = {
+            'components': ['Schedule', 'Chapter', 'Section', 'Sub-section', 'Article'],
+            'patterns': ['Schedule', 'Chapter', 'Section', 'Sub-section', 'Article']
+        }
+
+        doc = parse_iterable(it, descriptor)
+
+        result = [n for n in doc.graph.nodes(data=True)]
+
+        expected = [
+            ('ROOT [0]', {'meta': 'root', 'level': 0, 'text': [], 'pad': False, 'id': '/root'}),
+            ('Chapter [1]', {'meta': 'Chapter', 'level': 2, 'pad': False, 'text': ["Chapter I", 'This is chapter I text'], 'id': '/root/chapter-1'}),
+            ('Article [2]', {'meta': 'Article', 'level': 5, 'pad': False, 'text': ["Article I", 'This is article I text'], 'id': '/root/chapter-1/article-2'}),
+            ('Article [3]', {'meta': 'Article', 'level': 5, 'pad': False, 'text': ["Article II", 'This is article II text'], 'id': '/root/chapter-1/article-3'}),
+            ('Chapter [4]', {'meta': 'Chapter', 'level': 2, 'pad': False, 'text': ["Chapter II", 'This is chapter II text'], 'id': '/root/chapter-4'}),
+            ('Article [5]', {'meta': 'Article', 'level': 5, 'pad': False, 'text': ["Article I", 'This is article I text'], 'id': '/root/chapter-4/article-5'}),
+            ('Schedule [6]', {'meta': 'Schedule', 'level': 1, 'pad': False, 'text': ["Schedule I", 'This is schedule I text'], 'id': '/root/schedule-6'}),
+            ('Chapter [7]', {'meta': 'Chapter', 'level': 2, 'pad': False, 'text': ["Chapter I", 'This is chapter I text'], 'id': '/root/schedule-6/chapter-7'}),
+            ('Article [8]', {'meta': 'Article', 'level': 5, 'pad': False, 'text': ["Article I", 'This is article I text'], 'id': '/root/schedule-6/chapter-7/article-8'})
+        ]
+
+        self.assertListEqual(result, expected)
 
 
 
