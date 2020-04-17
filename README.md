@@ -232,4 +232,64 @@ metadata = {
 doc = {**doc.to_dict(), **metadata}
 ```
 
+### Complex Hierarchies
+
+There are documents that do not have a linear, unique hierarchy;
+some have multiple branches.
+
+e.g. legislation.gov.uk, Housing Act
+
+The component `Schedule` just exists at the second half of the document; and has the same hierarchical level as a `Chapter`;
+
+Effectively we have:
+```
+[Chapter|Schedule] → Part → Article → …
+```
+
+We can describe a multi-branch hierarchy in the `descriptor` object, by grouping together components
+with the same level,
+
+e.g.
+
+```python
+from graphify.parsing import parse_iterable
+
+it = [
+    "[[Chapter]] Chapter I",
+    "This is chapter I text",
+    "[[Article]] Article I",
+    "This is article I text",
+    "[[Article]] Article II",
+    "This is article II text",
+    "[[Chapter]] Chapter II",
+    "This is chapter II text",
+    "[[Article]] Article I",
+    "This is article I text",
+    "[[Schedule]] Schedule I",
+    "This is schedule I text",
+    "[[Article]] Article I",
+    "This is article I text",
+]
+
+descriptor = {
+    'components': [['Chapter', 'Schedule'], 'Section', 'Sub-section', 'Article'],
+    'patterns': [['Chapter', 'Schedule'], 'Section', 'Sub-section', 'Article']
+}
+
+doc = parse_iterable(it, descriptor)
+print(doc)
+```
+
+Which results in:
+
+```
+root
+Chapter
+			Article
+			Article
+Chapter
+			Article
+Schedule
+			Article
+```
 
