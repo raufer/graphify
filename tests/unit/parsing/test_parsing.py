@@ -193,6 +193,31 @@ class TestBuildGraph(TestCase):
 
         self.assertListEqual(result, expected)
 
+    def test_inject_arbitrary_metadata(self):
+        it = [
+            "[[Chapter]]{'id': '/base/chapter/1', 'p_number': 1} Chapter I",
+            "This is chapter I text",
+            "[[Article]]{'id': '/base/article/1'} Article I",
+            "This is article I text",
+        ]
+
+        descriptor = {
+            'components': ['Chapter', 'Section', 'Sub-section', 'Article'],
+            'patterns': ['Chapter', 'Section', 'Sub-section', 'Article']
+        }
+
+        doc = parse_iterable(it, descriptor)
+
+        result = [n for n in doc.graph.nodes(data=True)]
+
+        expected = [
+            ('ROOT [0]', {'meta': 'root', 'level': 0, 'text': [], 'pad': False, 'id': '/root'}),
+            ('Chapter [1]', {'meta': 'Chapter', 'level': 1, 'pad': False, 'text': ["Chapter I", 'This is chapter I text'], 'id': '/base/chapter/1', 'p_number': 1}),
+            ('Article [2]', {'meta': 'Article', 'level': 4, 'pad': False, 'text': ["Article I", 'This is article I text'], 'id': '/base/article/1'})
+        ]
+
+        self.assertListEqual(result, expected)
+
     def test_different_components_with_the_same_hierarchy(self):
         it = [
             "[[Chapter]] Chapter I",
