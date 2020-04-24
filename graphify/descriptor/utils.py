@@ -82,7 +82,12 @@ def extend_internal_patterns(descriptor: Dict) -> Dict:
     """
     descriptor = descriptor.copy()
 
-    make_pattern = lambda p: rf"(?:\[\[({p})\]\]|({p}))"
+    def make_pattern(p):
+        if '[[' in p and ']]' in p:
+            return p
+        else:
+            return rf"(?:\[\[({p})\]\]|({p}))"
+
     make_exclude = lambda p: rf"\[\[{p}\]\]\s?"
 
     patterns = [make_pattern(p) if isinstance(p, str) else [make_pattern(i) for i in p] for p in descriptor['patterns']]
