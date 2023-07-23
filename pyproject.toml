@@ -6,7 +6,7 @@ authors = ["raufer <raufer92@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-pytest = "4.4"
+pytest = "*"
 hypothesis = "4.15"
 networkx = "1.11"
 nxpd = "^0.2.0"
