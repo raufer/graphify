@@ -8,8 +8,8 @@ descriptor = {
     'patterns': [r'CHAPTER', r'ARTICLE', r'PARAGRAPH']
 }
 
-input = '/Users/raulferreira/waymark/experiments/similarity/documents/caversandco-aml-policy-v1.txt'
-output = '/Users/raulferreira/waymark/experiments/similarity/documents/caversandco-aml-policy-v1.json'
+input = 'in.txt'
+output = 'out.json'
 
 doc = parse_filepath(input, descriptor)
 d = doc.to_dict()
