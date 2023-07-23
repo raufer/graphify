@@ -1,8 +1,7 @@
 import collections
 import operator
-
+from collections.abc import MutableMapping
 from functools import reduce
-from collections import MutableMapping
 from itertools import chain, islice
 
 

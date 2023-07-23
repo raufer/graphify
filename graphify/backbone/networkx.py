@@ -1,6 +1,6 @@
-import networkx as nx
-
 from graphify.backbone import GraphBackboneAbstraction
+
+import networkx as nx
 
 
 class NetworkxImplementation(GraphBackboneAbstraction):
@@ -14,7 +14,7 @@ class NetworkxImplementation(GraphBackboneAbstraction):
 
     @property
     def node(self):
-        return self.graph.node
+        return self.graph.nodes
 
     def add_node(self, node, **data):
         self.graph.add_node(node, **data)
@@ -66,7 +66,7 @@ class NetworkxImplementation(GraphBackboneAbstraction):
         return g
 
     def __getitem__(self, key):
-        return self.graph.node[key]
+        return self.graph.nodes[key]
 
 
 if __name__ == '__main__':

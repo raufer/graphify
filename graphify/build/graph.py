@@ -1,8 +1,8 @@
 import os
-
-from graphify.ops.search import filter_bfs
-from graphify.descriptor.utils import parse_custom_data_object
 from typing import Dict
+
+from graphify.descriptor.utils import parse_custom_data_object
+from graphify.ops.search import filter_bfs
 
 
 def handle_match(graph, match, insert_level, descriptor):
